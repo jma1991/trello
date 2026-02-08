@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+  <style>
+    body {
+      padding: 8px;
+    }
+    .form-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .form-group {
+      flex: 1;
+    }
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    select {
+      width: 100%;
+      height: 32px;
+    }
+    .quadrant-result {
+      padding: 8px;
+      border-radius: 3px;
+      margin-bottom: 12px;
+      text-align: center;
+      font-weight: 500;
+    }
+    .quadrant-result.green { background: #61bd4f; color: white; }
+    .quadrant-result.blue { background: #0079bf; color: white; }
+    .quadrant-result.yellow { background: #f2d600; color: #172b4d; }
+    .quadrant-result.red { background: #eb5a46; color: white; }
+    .quadrant-result.empty { background: #f4f5f7; color: #5e6c84; }
+  </style>
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+</head>
+<body>
+  <form id="impact-effort-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="impact">Impact:</label>
+        <select name="impact" id="impact">
+          <option value="">Select...</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="effort">Effort:</label>
+        <select name="effort" id="effort">
+          <option value="">Select...</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div id="quadrant-result" class="quadrant-result empty">Select values above</div>
+    <button type="submit" class="mod-primary">Save</button>
+  </form>
+
+  <script>
+    var t = TrelloPowerUp.iframe();
+
+    var QUADRANTS = {
+      quickWin: { name: 'Quick Win', color: 'green', guidance: 'Do first – highest ROI' },
+      majorProject: { name: 'Major Project', color: 'blue', guidance: 'Plan carefully' },
+      fillIn: { name: 'Fill-in', color: 'yellow', guidance: 'Spare time tasks' },
+      thanklessTask: { name: 'Thankless Task', color: 'red', guidance: 'Avoid or minimize' }
+    };
+
+    function getQuadrant(impact, effort) {
+      if (impact === 'high' && effort === 'low') return QUADRANTS.quickWin;
+      if (impact === 'high' && effort === 'high') return QUADRANTS.majorProject;
+      if (impact === 'low' && effort === 'low') return QUADRANTS.fillIn;
+      if (impact === 'low' && effort === 'high') return QUADRANTS.thanklessTask;
+      return null;
+    }
+
+    function updateQuadrantDisplay() {
+      var impact = document.getElementById('impact').value;
+      var effort = document.getElementById('effort').value;
+      var resultDiv = document.getElementById('quadrant-result');
+
+      if (!impact || !effort) {
+        resultDiv.textContent = 'Select values above';
+        resultDiv.className = 'quadrant-result empty';
+        return;
+      }
+
+      var quadrant = getQuadrant(impact, effort);
+      if (quadrant) {
+        resultDiv.textContent = quadrant.name + ' – ' + quadrant.guidance;
+        resultDiv.className = 'quadrant-result ' + quadrant.color;
+      }
+    }
+
+    // Load saved values
+    t.get('card', 'shared', 'impactEffort')
+      .then(function(data) {
+        if (data) {
+          if (data.impact) {
+            document.getElementById('impact').value = data.impact;
+          }
+          if (data.effort) {
+            document.getElementById('effort').value = data.effort;
+          }
+          updateQuadrantDisplay();
+        }
+      });
+
+    // Update display on change
+    document.getElementById('impact').addEventListener('change', updateQuadrantDisplay);
+    document.getElementById('effort').addEventListener('change', updateQuadrantDisplay);
+
+    // Save on form submit
+    document.getElementById('impact-effort-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var impact = document.getElementById('impact').value;
+      var effort = document.getElementById('effort').value;
+
+      t.set('card', 'shared', 'impactEffort', {
+        impact: impact,
+        effort: effort
+      })
+      .then(function() {
+        t.closePopup();
+      });
+    });
+  </script>
+</body>
+</html>

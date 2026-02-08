@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Impact-Effort Matrix Power-Up</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="utf-8">
 </head>
 <body>
+  <h1>Impact-Effort Matrix Power-Up</h1>
+  <p>This is the connector page for the Power-Up.</p>
+
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
   <script>
-    var ICON_URL = 'https://jma1991.github.io/trello/icon.svg';
-    var CARD_BACK_URL = 'https://jma1991.github.io/trello/card-back.html';
+    var POPUP_URL = './popup.html';
+    var ICON_URL = './icon.svg';
 
     // Quadrant definitions
     var QUADRANTS = {
@@ -29,25 +29,24 @@
     }
 
     TrelloPowerUp.initialize({
-      'card-back-section': function(t, options) {
-        return {
-          title: 'Impact-Effort Matrix',
+      'card-buttons': function(t, options) {
+        return [{
           icon: ICON_URL,
-          content: {
-            type: 'iframe',
-            url: t.signUrl(CARD_BACK_URL),
-            height: 120
+          text: 'Impact / Effort',
+          callback: function(t) {
+            return t.popup({
+              title: 'Impact / Effort',
+              url: POPUP_URL,
+              height: 150
+            });
           }
-        };
+        }];
       },
       'card-badges': function(t, options) {
         return t.get('card', 'shared', 'impactEffort')
           .then(function(data) {
             if (!data || !data.impact || !data.effort) {
-              return [{
-                text: 'Rate Impact/Effort',
-                color: 'light-gray'
-              }];
+              return [];
             }
             var quadrant = getQuadrant(data.impact, data.effort);
             if (!quadrant) return [];
@@ -64,12 +63,35 @@
               return [];
             }
             var quadrant = getQuadrant(data.impact, data.effort);
-            if (!quadrant) return [];
-            return [{
-              title: 'Priority',
-              text: quadrant.name,
-              color: quadrant.color
-            }];
+            return [
+              {
+                title: 'Impact',
+                text: data.impact === 'high' ? 'High' : 'Low',
+                callback: function(t) {
+                  return t.popup({
+                    title: 'Impact / Effort',
+                    url: POPUP_URL,
+                    height: 150
+                  });
+                }
+              },
+              {
+                title: 'Effort',
+                text: data.effort === 'high' ? 'High' : 'Low',
+                callback: function(t) {
+                  return t.popup({
+                    title: 'Impact / Effort',
+                    url: POPUP_URL,
+                    height: 150
+                  });
+                }
+              },
+              {
+                title: 'Quadrant',
+                text: quadrant ? quadrant.name : '-',
+                color: quadrant ? quadrant.color : null
+              }
+            ];
           });
       }
     });

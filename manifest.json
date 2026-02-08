@@ -6,7 +6,7 @@
   },
   "author": "James",
   "capabilities": [
-    "card-back-section",
+    "card-buttons",
     "card-badges",
     "card-detail-badges"
   ],
