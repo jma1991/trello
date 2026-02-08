@@ -83,10 +83,10 @@
     var t = TrelloPowerUp.iframe();
 
     var QUADRANTS = {
-      quickWin: { name: 'Quick Win', color: 'green', guidance: 'Do first – highest ROI' },
-      majorProject: { name: 'Major Project', color: 'blue', guidance: 'Plan carefully' },
-      fillIn: { name: 'Fill-in', color: 'yellow', guidance: 'Spare time tasks' },
-      thanklessTask: { name: 'Thankless Task', color: 'red', guidance: 'Avoid or minimize' }
+      quickWin: { name: 'Quick Win', color: 'green' },
+      majorProject: { name: 'Major Project', color: 'blue' },
+      fillIn: { name: 'Fill-in', color: 'yellow' },
+      thanklessTask: { name: 'Thankless Task', color: 'red' }
     };
 
     function getQuadrant(impact, effort) {
@@ -110,7 +110,7 @@
 
       var quadrant = getQuadrant(impact, effort);
       if (quadrant) {
-        resultDiv.textContent = quadrant.name + ' – ' + quadrant.guidance;
+        resultDiv.textContent = quadrant.name;
         resultDiv.className = 'quadrant-result ' + quadrant.color;
       }
     }

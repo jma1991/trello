@@ -1,31 +1,27 @@
 // Impact-Effort Matrix Power-Up for Trello
 console.log('Impact-Effort Matrix Power-Up: Loading...');
 
-// Quadrant definitions with colors and guidance
+// Quadrant definitions with colors
 const QUADRANTS = {
   quickWin: {
     name: 'Quick Win',
     color: 'green',
-    icon: '🟢',
-    guidance: 'Do first – highest ROI'
+    icon: '🟢'
   },
   majorProject: {
     name: 'Major Project',
     color: 'blue',
-    icon: '🔵',
-    guidance: 'Plan carefully, do after quick wins'
+    icon: '🔵'
   },
   fillIn: {
     name: 'Fill-in',
     color: 'yellow',
-    icon: '🟡',
-    guidance: 'Do when you have spare time'
+    icon: '🟡'
   },
   thanklessTask: {
     name: 'Thankless Task',
     color: 'red',
-    icon: '🔴',
-    guidance: 'Avoid or minimize'
+    icon: '🔴'
   }
 };
 

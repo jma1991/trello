@@ -35,26 +35,22 @@
       quickWin: {
         name: 'Quick Win',
         color: 'green',
-        icon: '🟢',
-        guidance: 'Do first – highest ROI'
+        icon: '🟢'
       },
       majorProject: {
         name: 'Major Project',
         color: 'blue',
-        icon: '🔵',
-        guidance: 'Plan carefully, do after quick wins'
+        icon: '🔵'
       },
       fillIn: {
         name: 'Fill-in',
         color: 'yellow',
-        icon: '🟡',
-        guidance: 'Do when you have spare time'
+        icon: '🟡'
       },
       thanklessTask: {
         name: 'Thankless Task',
         color: 'red',
-        icon: '🔴',
-        guidance: 'Avoid or minimize'
+        icon: '🔴'
       }
     };
 
@@ -80,7 +76,6 @@
         resultDiv.innerHTML = `
           <span class="quadrant-icon">${quadrant.icon}</span>
           <span class="quadrant-name">${quadrant.name}</span>
-          <span class="quadrant-guidance">${quadrant.guidance}</span>
         `;
         resultDiv.className = 'quadrant-result ' + quadrant.color;
       }
