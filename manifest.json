@@ -1,0 +1,16 @@
+{
+  "name": "Impact-Effort Matrix",
+  "details": "Prioritize cards using the Impact-Effort Matrix framework. Categorize tasks into Quick Wins, Major Projects, Fill-ins, or Thankless Tasks based on their impact and effort levels.",
+  "icon": {
+    "url": "https://cdn-icons-png.flaticon.com/512/3176/3176298.png"
+  },
+  "author": "James",
+  "capabilities": [
+    "card-back-section",
+    "card-badges",
+    "card-detail-badges"
+  ],
+  "connectors": {
+    "iframe-connector": "./index.html"
+  }
+}

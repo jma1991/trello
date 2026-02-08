@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="impact-effort-container">
+    <div class="selector-row">
+      <div class="selector-group">
+        <label for="impact">Impact</label>
+        <select id="impact">
+          <option value="">Select...</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+      <div class="selector-group">
+        <label for="effort">Effort</label>
+        <select id="effort">
+          <option value="">Select...</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div id="quadrant-result" class="quadrant-result"></div>
+  </div>
+
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script>
+    // Quadrant definitions
+    const QUADRANTS = {
+      quickWin: {
+        name: 'Quick Win',
+        color: 'green',
+        icon: '🟢',
+        guidance: 'Do first – highest ROI'
+      },
+      majorProject: {
+        name: 'Major Project',
+        color: 'blue',
+        icon: '🔵',
+        guidance: 'Plan carefully, do after quick wins'
+      },
+      fillIn: {
+        name: 'Fill-in',
+        color: 'yellow',
+        icon: '🟡',
+        guidance: 'Do when you have spare time'
+      },
+      thanklessTask: {
+        name: 'Thankless Task',
+        color: 'red',
+        icon: '🔴',
+        guidance: 'Avoid or minimize'
+      }
+    };
+
+    function getQuadrant(impact, effort) {
+      if (impact === 'high' && effort === 'low') return QUADRANTS.quickWin;
+      if (impact === 'high' && effort === 'high') return QUADRANTS.majorProject;
+      if (impact === 'low' && effort === 'low') return QUADRANTS.fillIn;
+      if (impact === 'low' && effort === 'high') return QUADRANTS.thanklessTask;
+      return null;
+    }
+
+    function updateQuadrantDisplay(impact, effort) {
+      const resultDiv = document.getElementById('quadrant-result');
+      
+      if (!impact || !effort) {
+        resultDiv.innerHTML = '';
+        resultDiv.className = 'quadrant-result';
+        return;
+      }
+
+      const quadrant = getQuadrant(impact, effort);
+      if (quadrant) {
+        resultDiv.innerHTML = `
+          <span class="quadrant-icon">${quadrant.icon}</span>
+          <span class="quadrant-name">${quadrant.name}</span>
+          <span class="quadrant-guidance">${quadrant.guidance}</span>
+        `;
+        resultDiv.className = 'quadrant-result ' + quadrant.color;
+      }
+    }
+
+    var t = TrelloPowerUp.iframe();
+
+    // Load saved values
+    t.get('card', 'shared', 'impactEffort')
+      .then(function(data) {
+        if (data) {
+          if (data.impact) {
+            document.getElementById('impact').value = data.impact;
+          }
+          if (data.effort) {
+            document.getElementById('effort').value = data.effort;
+          }
+          updateQuadrantDisplay(data.impact, data.effort);
+        }
+      });
+
+    // Save on change
+    function saveAndUpdate() {
+      var impact = document.getElementById('impact').value;
+      var effort = document.getElementById('effort').value;
+
+      t.set('card', 'shared', 'impactEffort', {
+        impact: impact,
+        effort: effort
+      });
+
+      updateQuadrantDisplay(impact, effort);
+    }
+
+    document.getElementById('impact').addEventListener('change', saveAndUpdate);
+    document.getElementById('effort').addEventListener('change', saveAndUpdate);
+
+    // Resize iframe to fit content
+    t.sizeTo('body').catch(function() {});
+  </script>
+</body>
+</html>
