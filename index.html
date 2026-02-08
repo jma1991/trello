@@ -5,9 +5,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Impact-Effort Matrix Power-Up</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://p.trellocdn.com/power-up.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <script src="js/client.js"></script>
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script>
+    var ICON_URL = 'https://jma1991.github.io/trello/icon.svg';
+    var CARD_BACK_URL = 'https://jma1991.github.io/trello/card-back.html';
+
+    // Quadrant definitions
+    var QUADRANTS = {
+      quickWin: { name: 'Quick Win', color: 'green' },
+      majorProject: { name: 'Major Project', color: 'blue' },
+      fillIn: { name: 'Fill-in', color: 'yellow' },
+      thanklessTask: { name: 'Thankless Task', color: 'red' }
+    };
+
+    function getQuadrant(impact, effort) {
+      if (impact === 'high' && effort === 'low') return QUADRANTS.quickWin;
+      if (impact === 'high' && effort === 'high') return QUADRANTS.majorProject;
+      if (impact === 'low' && effort === 'low') return QUADRANTS.fillIn;
+      if (impact === 'low' && effort === 'high') return QUADRANTS.thanklessTask;
+      return null;
+    }
+
+    TrelloPowerUp.initialize({
+      'card-back-section': function(t, options) {
+        return {
+          title: 'Impact-Effort Matrix',
+          icon: ICON_URL,
+          content: {
+            type: 'iframe',
+            url: t.signUrl(CARD_BACK_URL),
+            height: 120
+          }
+        };
+      },
+      'card-badges': function(t, options) {
+        return t.get('card', 'shared', 'impactEffort')
+          .then(function(data) {
+            if (!data || !data.impact || !data.effort) {
+              return [{
+                text: 'Rate Impact/Effort',
+                color: 'light-gray'
+              }];
+            }
+            var quadrant = getQuadrant(data.impact, data.effort);
+            if (!quadrant) return [];
+            return [{
+              text: quadrant.name,
+              color: quadrant.color
+            }];
+          });
+      },
+      'card-detail-badges': function(t, options) {
+        return t.get('card', 'shared', 'impactEffort')
+          .then(function(data) {
+            if (!data || !data.impact || !data.effort) {
+              return [];
+            }
+            var quadrant = getQuadrant(data.impact, data.effort);
+            if (!quadrant) return [];
+            return [{
+              title: 'Priority',
+              text: quadrant.name,
+              color: quadrant.color
+            }];
+          });
+      }
+    });
+  </script>
 </body>
 </html>
